@@ -56,8 +56,7 @@ webserver.get('/bug2', (req, res, next) => {
     res1.on('data', () => {
       const req2 = http.request({ host: 'httpbin.org', path: '/status/200' }, res2 => {
         res2.on('data', () => {})
-        res2.on('end', () => {
-        });
+        res2.on('end', () => {});
       });
       
       req2.end();
