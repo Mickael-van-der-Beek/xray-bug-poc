@@ -1,0 +1,19 @@
+{
+  "name": "xray-bug-poc",
+  "engines": {
+    "node": "6.9.4"
+  },
+  "scripts": {
+    "start": "node ./src/xray-bug-poc.js",
+    "test": "mocha ./test/xray-bug-poc.spec.js"
+  },
+  "dependencies": {
+    "aws-xray-sdk": "1.0.0-beta",
+    "express": "4.14.0",
+    "request": "2.79.0",
+    "request-promise": "4.1.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  }
+}
