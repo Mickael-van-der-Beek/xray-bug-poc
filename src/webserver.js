@@ -42,9 +42,29 @@ webserver.get('/1-in-2-out', (req, res, next) => request
   .catch(next)
 );
 
-webserver.get('/1-in-1-out-async', (req, res, next) => {
-  const req1 = http.request({ hostname: 'httpbin.org', path: '/delay/3' }, res1 => {
-    res1.on('end', res.status(200).end());
+webserver.get('/bug1', (req, res, next) => {
+  const req1 = http.request({ hostname: 'httpbin.org', path: '/status/200' }, res1 => {
+    res1.on('data', () => {})
+    res1.on('end', () => res.status(200).end());
+  });
+
+  req1.end();
+});
+
+webserver.get('/bug2', (req, res, next) => {
+  const req1 = http.request({ host: 'httpbin.org', path: '/delay/3' }, res1 => {
+    res1.on('data', () => {
+      const req2 = http.request({ host: 'httpbin.org', path: '/status/200' }, res2 => {
+        res2.on('data', () => {})
+        res2.on('end', () => {
+        });
+      });
+      
+      req2.end();
+    })
+    res1.on('end', () => {
+      res.status(200).end();
+    });
   });
 
   req1.end();
