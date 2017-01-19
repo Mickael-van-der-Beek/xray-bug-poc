@@ -42,6 +42,33 @@ webserver.get('/1-in-2-out', (req, res, next) => request
   .catch(next)
 );
 
+webserver.get(
+  '/1-in-3-out-mdl',
+  (req, res, next) => {
+    const req1 = http.request({ host: 'httpbin.org', path: '/delay/2' }, res1 => {
+      res1.on('data', () => {})
+      res1.on('end', next);
+    });
+
+    req1.end();
+  },
+  (req, res, next) => {
+    const req1 = http.request({ host: 'httpbin.org', path: '/delay/3' }, res1 => {
+      res1.on('data', () => {})
+      res1.on('end', next);
+    });
+
+    req1.end();
+  },
+  (req, res) => {
+    const req1 = http.request({ host: 'httpbin.org', path: '/delay/1' }, res1 => {
+      res1.on('data', () => {})
+      res1.on('end', () => res.status(200).end());
+    });
+
+    req1.end();
+  });
+
 webserver.get('/bug1', (req, res, next) => {
   const req1 = http.request({ hostname: 'httpbin.org', path: '/status/200' }, res1 => {
     res1.on('data', () => {})
@@ -94,7 +121,7 @@ webserver.get(
   (req, res) => {
     const req1 = http.request({ host: 'httpbin.org', path: '/delay/1' }, res1 => {
       res1.on('data', () => {})
-      res1.on('end', () => {});
+      res1.on('end', () => res.status(200).end());
     });
 
     req1.end();

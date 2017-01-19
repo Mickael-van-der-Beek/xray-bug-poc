@@ -44,6 +44,24 @@ describe('X-Ray bug proof of concept', () => {
     request.get(`http://${config.webserver.hostname}:${config.webserver.port}/1-in-2-out`);
   });
 
+  it('1 inbound request, 3 outbound requests using middlewares', function (callback) {
+    this.timeout(1000 * 20);
+
+    udpserver.setMessageHandler(
+      message => {
+        assert.ok(util.isArray(message.subsegments));
+        assert.strictEqual(message.subsegments.length, 1);
+        assert.ok(util.isArray(message.subsegments[0].subsegments));
+        assert.strictEqual(message.subsegments[0].subsegments.length, 1);
+        assert.ok(util.isArray(message.subsegments[0].subsegments[0].subsegments));
+        assert.strictEqual(message.subsegments[0].subsegments[0].subsegments.length, 1);
+        callback();
+      }
+    );
+
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/1-in-3-out-mdl`);
+  });
+
   it('bug 1', function (callback) {
     this.timeout(1000 * 5);
 
@@ -78,17 +96,16 @@ describe('X-Ray bug proof of concept', () => {
 
     udpserver.setMessageHandler(
       message => {
-        console.log(require('util').inspect(message, { colors: true, depth: 100}));
-        // assert.ok(util.isArray(message.subsegments));
-        // assert.strictEqual(message.subsegments.length, 2);
-        // callback();
+        assert.ok(util.isArray(message.subsegments));
+        assert.strictEqual(message.subsegments.length, 1);
+        assert.ok(util.isArray(message.subsegments[0].subsegments));
+        assert.strictEqual(message.subsegments[0].subsegments.length, 1);
+        assert.ok(util.isArray(message.subsegments[0].subsegments[0]));
+        assert.strictEqual(message.subsegments[0].subsegments[0].length, 1);
+        callback();
       }
     );
 
-    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
-    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
-    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
-    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
     request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
   });
 });
