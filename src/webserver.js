@@ -69,29 +69,6 @@ webserver.get('/bug2', (req, res, next) => {
   req1.end();
 });
 
-// webserver.get('/bug3', (req, res, next) => {
-//   const req1 = http.request({ host: 'httpbin.org', path: '/delay/5' }, res1 => {
-//     res1.on('data', () => {})
-//     res1.on('end', () => {
-//       res.status(200).end();
-//     });
-//   });
-
-//   setTimeout(
-//     () => {
-//       const req2 = http.request({ host: 'httpbin.org', path: '/delay/2' }, res2 => {
-//         res2.on('data', () => {})
-//         res2.on('end', () => {});
-//       });
-      
-//       req2.end();
-//     },
-//     1000
-//   );
-
-//   req1.end();
-// });
-
 webserver.get(
   '/bug3',
   (req, res, next) => {
@@ -106,6 +83,7 @@ webserver.get(
     const dgram = require('dgram');
     const buffer = Buffer.from('Hello World');
     const client = dgram.createSocket('udp4');
+
     client.send(
       buffer,
       config.udpserver.port,
@@ -116,9 +94,7 @@ webserver.get(
   (req, res) => {
     const req1 = http.request({ host: 'httpbin.org', path: '/delay/1' }, res1 => {
       res1.on('data', () => {})
-      res1.on('end', () => {
-        res.status(200).end();
-      });
+      res1.on('end', () => {});
     });
 
     req1.end();
