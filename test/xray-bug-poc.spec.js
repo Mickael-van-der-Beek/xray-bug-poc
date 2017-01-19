@@ -72,4 +72,23 @@ describe('X-Ray bug proof of concept', () => {
 
     request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug2`);
   });
+
+  it('bug 3', function (callback) {
+    this.timeout(1000 * 20);
+
+    udpserver.setMessageHandler(
+      message => {
+        console.log(require('util').inspect(message, { colors: true, depth: 100}));
+        // assert.ok(util.isArray(message.subsegments));
+        // assert.strictEqual(message.subsegments.length, 2);
+        // callback();
+      }
+    );
+
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
+    request.get(`http://${config.webserver.hostname}:${config.webserver.port}/bug3`);
+  });
 });
